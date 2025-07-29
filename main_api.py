@@ -28,19 +28,21 @@ def read_root():
 
 
 @app.get("/weather")
-def get_weather_route(
-    city: str = Query(..., description="City name to check weather for")
-):
-    try:
-        result = get_weather(city)
-        if result == "Error":
-            return JSONResponse(
-                content={"error": "City not found or API issue"}, status_code=404
-            )
-        temp, desc = result
-        return {"city": city, "temperature_celsius": temp, "description": desc}
-    except Exception as e:
-        return JSONResponse(content={"error": str(e)}, status_code=500)
+def get_weather_route(city: str = "Sydney"):
+    result = get_weather(city)  # call your core logic
+    if "error" in result:
+        return f"<h3>⚠️ {result['error']}</h3>"
+
+    return f"""
+    <html>
+        <body>
+            <h2>🌤️ Weather in {result['city']}</h2>
+            <p>Temperature: {result['temperature']}°C</p>
+            <p>Conditions: {result['weather']}</p>
+            <p>📝 Recommendation: {result['recommendation']}</p>
+        </body>
+    </html>
+    """
 
 
 if __name__ == "__main__":
