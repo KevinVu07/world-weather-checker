@@ -1,6 +1,7 @@
 from fastapi import FastAPI, Query
 from fastapi.responses import JSONResponse
 import uvicorn
+from fastapi.responses import HTMLResponse
 
 from project import get_weather
 
@@ -9,6 +10,21 @@ app = FastAPI(
     description="Check the weather and get recommendations for any city.",
     version="1.0.0",
 )
+
+
+@app.get("/", response_class=HTMLResponse)
+def read_root():
+    return """
+    <html>
+      <head>
+        <title>World Weather Checker</title>
+      </head>
+      <body>
+        <h1>🌦️ Welcome to World Weather Checker!</h1>
+        <p>Use the <code>/weather?city=tokyo</code> endpoint to check the weather.</p>
+      </body>
+    </html>
+    """
 
 
 @app.get("/weather")
